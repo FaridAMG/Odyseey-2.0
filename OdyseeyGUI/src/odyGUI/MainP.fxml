@@ -41,15 +41,15 @@
                <children>
                   <TableView fx:id="tv_mymusic" layoutX="105.0" layoutY="250.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Song" />
-                      <TableColumn prefWidth="75.0" text="Artist" />
-                        <TableColumn prefWidth="75.0" text="Album" />
-                        <TableColumn prefWidth="75.0" text="Genre" />
-                        <TableColumn prefWidth="75.0" text="Year" />
-                        <TableColumn prefWidth="75.0" text="Lyrics" />
+                      <TableColumn fx:id="tc_song" prefWidth="75.0" text="Song" />
+                      <TableColumn fx:id="tc_artist" prefWidth="75.0" text="Artist" />
+                        <TableColumn fx:id="tc_album" prefWidth="75.0" text="Album" />
+                        <TableColumn fx:id="tc_genre" prefWidth="75.0" text="Genre" />
+                        <TableColumn fx:id="tc_year" prefWidth="75.0" text="Year" />
+                        <TableColumn fx:id="tc_lyrics" prefWidth="75.0" text="Lyrics" />
                     </columns>
                   </TableView>
-                  <Button fx:id="btn_playpause" layoutX="14.0" layoutY="437.0" mnemonicParsing="false" text="Play" AnchorPane.bottomAnchor="3.5" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="343.0" AnchorPane.topAnchor="440.5" />
+                  <Button layoutX="14.0" layoutY="437.0" mnemonicParsing="false" onAction="#btnPlayPause" text="Play" AnchorPane.bottomAnchor="3.5" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="343.0" AnchorPane.topAnchor="440.5" />
                   <Slider fx:id="slr_media" layoutX="70.0" layoutY="449.0" prefHeight="16.0" prefWidth="274.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="66.0" />
                   <Label fx:id="lbl_medtime" layoutX="352.0" layoutY="449.0" text="2.32" />
                   <MediaView fx:id="mv_video" fitHeight="200.0" fitWidth="200.0" layoutX="107.0" layoutY="14.0" />

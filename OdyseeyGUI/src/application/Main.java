@@ -8,6 +8,11 @@ import javafx.fxml.FXMLLoader;
 
 
 public class Main extends Application {
+	
+	//*** CREATES AND initialize USER CLASS**
+			public final static TheUser UserInstance = new TheUser();
+		//
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -22,6 +27,10 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		//*** INITIALIZE COMUNICATION WITH SERVER***
+			
+		//
+		
 		launch(args);
 	}
 }
