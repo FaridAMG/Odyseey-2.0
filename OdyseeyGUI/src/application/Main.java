@@ -1,5 +1,6 @@
 package application;
 	
+import clientConn.Client;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ public class Main extends Application {
 	
 	//*** CREATES AND initialize USER CLASS**
 			public final static TheUser UserInstance = new TheUser();
+			public final static Client client = new Client();
 		//
 	
 	@Override
@@ -28,7 +30,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		//*** INITIALIZE COMUNICATION WITH SERVER***
-			
+			client.startClient();
 		//
 		
 		launch(args);
