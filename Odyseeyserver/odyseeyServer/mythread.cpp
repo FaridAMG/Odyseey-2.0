@@ -50,6 +50,16 @@ void MyThread::readyRead()
     socket->write(Data);
 }
 
+
+
+void MyThread::readyWrite(){
+
+
+
+}
+
+
+
 void MyThread::disconnected()
 {
     QTextStream(stdout) << socketDescriptor << " Disconnected"<<endl;
