@@ -2,6 +2,7 @@
 
 #include "myserver.h"
 #include "mythread.h"
+#include "databaseconn.h"
 
 MyServer::MyServer(QObject *parent) :
     QTcpServer(parent)
@@ -19,6 +20,16 @@ void MyServer::startServer()
     else
     {
         QTextStream(stdout) << "Listening to port " << port << "..."<<endl;
+
+        // DATABASE CONNECTION TRIALS
+
+        DatabaseConn * database = new DatabaseConn();
+        database->connectAndOpenDB();
+        delete database;
+
+        //END DATABASE CONNECTION TRIALS
+
+
     }
 }
 

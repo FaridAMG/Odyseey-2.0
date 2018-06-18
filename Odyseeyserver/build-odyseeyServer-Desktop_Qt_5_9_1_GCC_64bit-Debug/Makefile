@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../odyseeyServer -I. -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../odyseeyServer -I. -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/farida/IDEs/Qt/5.9.1/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,7 +38,7 @@ DISTNAME      = odyseeyServer1.0.0
 DISTDIR = /home/farida/Documents/gitKraken\ repositories/Odyseey++2.0\ Repository/Odyseey++2.0/Odyseeyserver/build-odyseeyServer-Desktop_Qt_5_9_1_GCC_64bit-Debug/.tmp/odyseeyServer1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/farida/IDEs/Qt/5.9.1/gcc_64/lib
-LIBS          = $(SUBLIBS) -L/home/farida/IDEs/Qt/5.9.1/gcc_64/lib -lQt5Network -lQt5Core -lpthread 
+LIBS          = $(SUBLIBS) -L/home/farida/IDEs/Qt/5.9.1/gcc_64/lib -lQt5Sql -lQt5Network -lQt5Core -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,11 +52,13 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../odyseeyServer/main.cpp \
 		../odyseeyServer/myserver.cpp \
-		../odyseeyServer/mythread.cpp moc_myserver.cpp \
+		../odyseeyServer/mythread.cpp \
+		../odyseeyServer/databaseconn.cpp moc_myserver.cpp \
 		moc_mythread.cpp
 OBJECTS       = main.o \
 		myserver.o \
 		mythread.o \
+		databaseconn.o \
 		moc_myserver.o \
 		moc_mythread.o
 DIST          = /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/spec_pre.prf \
@@ -237,9 +239,11 @@ DIST          = /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/spec_pre.prf 
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/yacc.prf \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/lex.prf \
 		../odyseeyServer/odyseeyServer.pro ../odyseeyServer/myserver.h \
-		../odyseeyServer/mythread.h ../odyseeyServer/main.cpp \
+		../odyseeyServer/mythread.h \
+		../odyseeyServer/databaseconn.h ../odyseeyServer/main.cpp \
 		../odyseeyServer/myserver.cpp \
-		../odyseeyServer/mythread.cpp
+		../odyseeyServer/mythread.cpp \
+		../odyseeyServer/databaseconn.cpp
 QMAKE_TARGET  = odyseeyServer
 DESTDIR       = 
 TARGET        = odyseeyServer
@@ -429,6 +433,7 @@ Makefile: ../odyseeyServer/odyseeyServer.pro /home/farida/IDEs/Qt/5.9.1/gcc_64/m
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/yacc.prf \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/lex.prf \
 		../odyseeyServer/odyseeyServer.pro \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Sql.prl \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Network.prl \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Core.prl
 	$(QMAKE) -o Makefile ../odyseeyServer/odyseeyServer.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
@@ -610,6 +615,7 @@ Makefile: ../odyseeyServer/odyseeyServer.pro /home/farida/IDEs/Qt/5.9.1/gcc_64/m
 /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/yacc.prf:
 /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/lex.prf:
 ../odyseeyServer/odyseeyServer.pro:
+/home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Sql.prl:
 /home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Network.prl:
 /home/farida/IDEs/Qt/5.9.1/gcc_64/lib/libQt5Core.prl:
 qmake: FORCE
@@ -627,8 +633,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../odyseeyServer/myserver.h ../odyseeyServer/mythread.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../odyseeyServer/main.cpp ../odyseeyServer/myserver.cpp ../odyseeyServer/mythread.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../odyseeyServer/myserver.h ../odyseeyServer/mythread.h ../odyseeyServer/databaseconn.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../odyseeyServer/main.cpp ../odyseeyServer/myserver.cpp ../odyseeyServer/mythread.cpp ../odyseeyServer/databaseconn.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -663,10 +669,9 @@ moc_predefs.h: /home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/features/data/dummy.cpp
 compiler_moc_header_make_all: moc_myserver.cpp moc_mythread.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_myserver.cpp moc_mythread.cpp
-moc_myserver.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnamespace.h \
+moc_myserver.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpServer \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpserver.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qglobal.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig-bootstrapped.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig.h \
@@ -688,6 +693,10 @@ moc_myserver.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmutex.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnumeric.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qversiontagging.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnamespace.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs_impl.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstring.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qchar.h \
@@ -710,10 +719,32 @@ moc_myserver.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qiodevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdebug.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhash.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextstream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlocale.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvariant.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qshareddata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvector.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpoint.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qset.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qhostaddress.h \
+		../odyseeyServer/mythread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpSocket \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QDebug \
 		../odyseeyServer/myserver.h \
 		moc_predefs.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc
-	/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++ -I'/home/farida/Documents/gitKraken repositories/Odyseey++2.0 Repository/Odyseey++2.0/Odyseeyserver/odyseeyServer' -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../odyseeyServer/myserver.h -o moc_myserver.cpp
+	/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++ -I'/home/farida/Documents/gitKraken repositories/Odyseey++2.0 Repository/Odyseey++2.0/Odyseeyserver/odyseeyServer' -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../odyseeyServer/myserver.h -o moc_myserver.cpp
 
 moc_mythread.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthread.h \
@@ -763,7 +794,6 @@ moc_mythread.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpSocket \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpsocket.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -787,7 +817,7 @@ moc_mythread.cpp: /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
 		../odyseeyServer/mythread.h \
 		moc_predefs.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc
-	/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++ -I'/home/farida/Documents/gitKraken repositories/Odyseey++2.0 Repository/Odyseey++2.0/Odyseeyserver/odyseeyServer' -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../odyseeyServer/mythread.h -o moc_mythread.cpp
+	/home/farida/IDEs/Qt/5.9.1/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/farida/IDEs/Qt/5.9.1/gcc_64/mkspecs/linux-g++ -I'/home/farida/Documents/gitKraken repositories/Odyseey++2.0 Repository/Odyseey++2.0/Odyseeyserver/odyseeyServer' -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork -I/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../odyseeyServer/mythread.h -o moc_mythread.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -849,14 +879,40 @@ main.o: ../odyseeyServer/main.cpp /home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCo
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qeventloop.h
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qeventloop.h \
+		../odyseeyServer/myserver.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpServer \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpserver.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qiodevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdebug.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhash.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextstream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlocale.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvariant.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qshareddata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvector.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpoint.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qset.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qhostaddress.h \
+		../odyseeyServer/mythread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpSocket \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../odyseeyServer/main.cpp
 
 myserver.o: ../odyseeyServer/myserver.cpp ../odyseeyServer/myserver.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnamespace.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpServer \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpserver.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qglobal.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig-bootstrapped.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig.h \
@@ -878,6 +934,10 @@ myserver.o: ../odyseeyServer/myserver.cpp ../odyseeyServer/myserver.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmutex.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnumeric.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qversiontagging.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetwork-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnamespace.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs_impl.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstring.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qchar.h \
@@ -899,7 +959,29 @@ myserver.o: ../odyseeyServer/myserver.cpp ../odyseeyServer/myserver.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmetatype.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qabstractsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qiodevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdebug.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhash.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextstream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlocale.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvariant.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qshareddata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvector.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpoint.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qset.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qhostaddress.h \
+		../odyseeyServer/mythread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QThread \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpSocket \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpsocket.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myserver.o ../odyseeyServer/myserver.cpp
 
 mythread.o: ../odyseeyServer/mythread.cpp ../odyseeyServer/mythread.h \
@@ -951,7 +1033,6 @@ mythread.o: ../odyseeyServer/mythread.cpp ../odyseeyServer/mythread.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
-		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/QTcpSocket \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtcpsocket.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -973,6 +1054,257 @@ mythread.o: ../odyseeyServer/mythread.cpp ../odyseeyServer/mythread.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mythread.o ../odyseeyServer/mythread.cpp
+
+databaseconn.o: ../odyseeyServer/databaseconn.cpp ../odyseeyServer/databaseconn.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/QtSql \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/QtSqlDepends \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QtCore \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QtCoreDepends \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qglobal.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qconfig.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtcore-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsysinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlogging.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qflags.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qatomic.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmutex.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnumeric.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qversiontagging.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstractanimation.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qnamespace.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstring.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qchar.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbytearray.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qrefcount.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qarraydata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlist.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qalgorithms.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qiterator.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhashfunctions.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpair.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstringlist.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qregexp.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcoreevent.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmetatype.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobject_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qeventloop.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvariant.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdebug.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhash.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextstream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qiodevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlocale.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qshareddata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvector.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpoint.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qset.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstractstate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qabstracttransition.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qanimationgroup.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qarraydataops.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbasictimer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbitarray.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbuffer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcache.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcollator.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcommandlineoption.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcommandlineparser.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdatastream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdatetime.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdeadlinetimer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qelapsedtimer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdir.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfileinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfile.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfiledevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qdiriterator.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qeasingcurve.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qendian.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qeventtransition.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qexception.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfactoryinterface.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfileselector.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QObject \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QStringList \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfinalstate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfuture.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfutureinterface.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qrunnable.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qresultstore.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qfuturewatcher.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qhistorystate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qisenum.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qjsonarray.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qjsondocument.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qjsonobject.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlibrary.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlibraryinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qversionnumber.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qline.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlinkedlist.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qlockfile.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qloggingcategory.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmargins.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmath.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmetaobject.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmimedata.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmimedatabase.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qmimetype.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qoperatingsystemversion.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpauseanimation.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qplugin.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpointer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpluginloader.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qprocess.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qpropertyanimation.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qvariantanimation.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qqueue.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qreadwritelock.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qrect.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsize.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qregularexpression.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qresource.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsavefile.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsemaphore.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsettings.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsharedmemory.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsignalmapper.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsignaltransition.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsocketnotifier.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstack.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstandardpaths.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstatemachine.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstorageinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qstringlistmodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtemporarydir.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QScopedPointer \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtemporaryfile.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtextcodec.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthread.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthreadpool.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qthreadstorage.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtimeline.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtimer.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtimezone.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtranslator.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtypetraits.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qurl.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qurlquery.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/quuid.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qwaitcondition.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qwineventnotifier.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qxmlstream.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/qtcoreversion.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qtsqlglobal.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqldatabase.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqldriver.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqldriverplugin.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlerror.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlfield.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlindex.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlrecord.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlquery.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlquerymodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlrelationaldelegate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qtguiglobal.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qtgui-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qwidget.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpaintdevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpalette.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qcolor.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qrgb.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qrgba64.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qbrush.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qmatrix.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpolygon.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qregion.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qtransform.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpainterpath.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qimage.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpixelformat.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qpixmap.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qfont.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qfontmetrics.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qfontinfo.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qcursor.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qkeysequence.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qevent.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qvector2d.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qvalidator.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtGui/qicon.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qslider.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qstyle.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qframe.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qlistview.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtWidgets/qcombobox.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlrelationaltablemodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqltablemodel.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qsqlresult.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtSql/qtsqlversion.h \
+		/home/farida/IDEs/Qt/5.9.1/gcc_64/include/QtCore/QtDebug
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o databaseconn.o ../odyseeyServer/databaseconn.cpp
 
 moc_myserver.o: moc_myserver.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_myserver.o moc_myserver.cpp

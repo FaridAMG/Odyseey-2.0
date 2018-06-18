@@ -17,6 +17,8 @@ public:
     void run();
     //my add
     void readyWrite();
+    void sortInputInfo(std::string InputInfo);
+    
 signals:
     void error(QTcpSocket::SocketError socketerror);
 
